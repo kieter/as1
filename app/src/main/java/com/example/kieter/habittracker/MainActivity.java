@@ -33,7 +33,6 @@ public class MainActivity extends AppCompatActivity implements AddHabitDialogFra
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        // TODO put in onResume
         ListView listView = (ListView)findViewById(R.id.listOfHabits);
         Collection<Habit> habits = HabitListController.getHabitList().getHabits();
         final ArrayList<Habit> list = new ArrayList<Habit>(habits);
@@ -112,12 +111,6 @@ public class MainActivity extends AppCompatActivity implements AddHabitDialogFra
         }
 
     }
-
-    public void addHabitLongClick(View view) {
-        Intent intent = new Intent(MainActivity.this, HabitActivity.class);
-        startActivity(intent);
-    }
-
 
 
 // Settings, don't need them I think.

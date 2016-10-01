@@ -18,10 +18,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".SeeHabitActivity"
-            android:label="@string/title_activity_see_habit"
-            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".HabitActivity"></activity>
     </application>
 

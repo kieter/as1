@@ -29,7 +29,6 @@ import java.util.Locale;
 
 //https://developer.android.com/guide/topics/ui/dialogs.html
 //http://stackoverflow.com/questions/10903754/input-text-dialog-android
-    //TODO transfer all the input info into classes
 public class AddHabitDialogFragment extends DialogFragment {
 
     public AddHabitDialogFragment() {
@@ -130,7 +129,6 @@ public class AddHabitDialogFragment extends DialogFragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-                // TODO probably throw an error if name or date are empty
 
                 HabitInputDialogListener listener = (HabitInputDialogListener) getActivity();
                 listener.onFinishInputEvent(input.getText().toString(), dateInput.getText().toString(), selectedDaysofWeek);

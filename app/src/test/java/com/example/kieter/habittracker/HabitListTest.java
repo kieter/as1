@@ -17,7 +17,7 @@ public class HabitListTest extends TestCase{
         assertTrue("Empty habit list", habitList.size() == 0);
     }
 
-    public void testAddHabit() {
+    public void testAddHabit() throws HabitInvalidException {
         String date = "";
         ArrayList list = new ArrayList();
 
@@ -32,7 +32,7 @@ public class HabitListTest extends TestCase{
         assertTrue("Test habit not contained", habitList.contains(testHabit));
     }
 
-    public void testGetHabit() {
+    public void testGetHabit() throws HabitInvalidException {
         String date = "";
         ArrayList list = new ArrayList();
 
@@ -47,7 +47,7 @@ public class HabitListTest extends TestCase{
         assertTrue("Test habit not contained", habits.contains(testHabit));
     }
 
-    public void testRemoveHabit() {
+    public void testRemoveHabit() throws HabitInvalidException {
         String date = "";
         ArrayList list = new ArrayList();
 
@@ -67,9 +67,8 @@ public class HabitListTest extends TestCase{
         assertFalse("Test habit still theree?", habitList.contains(testHabit));
     }
 
-    //TODO: 35:00 IN STUDENT PICKER PART 6, IMPLEMENT REMOVE LISTENER
     boolean updated = false;
-    public void testNotifyListeners() {
+    public void testNotifyListeners() throws HabitInvalidException {
         HabitList habitList = new HabitList();
         String habitName = "";
         String date = "";
@@ -92,7 +91,7 @@ public class HabitListTest extends TestCase{
         assertTrue("HabitList didn't fire an update", this.updated);
     }
 
-    public void testRemoveListeners() {
+    public void testRemoveListeners() throws HabitInvalidException {
         HabitList habitList = new HabitList();
         String habitName = "";
         String date = "";

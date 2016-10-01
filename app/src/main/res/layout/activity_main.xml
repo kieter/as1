@@ -63,8 +63,8 @@
         app:fabSize="mini"
         app:srcCompat="@android:drawable/arrow_up_float"
         android:id="@+id/floatingActionButton"
-        android:onClick="addHabitLongClick"
         android:layout_gravity="top|right"
-        app:layout_anchorGravity="bottom|center_horizontal" />
+        app:layout_anchorGravity="bottom|center_horizontal"
+        tools:ignore="RtlHardcoded" />
 
 </android.support.design.widget.CoordinatorLayout>
