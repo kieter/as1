@@ -13,19 +13,24 @@ import java.util.Locale;
  */
 
 public class Habit {
-    //
+
     protected String habitName;
     protected String creationDate;
-//    protected SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yy");
     protected ArrayList<String> frequency;
+    protected ArrayList<Date> completions;
 
     // Constructor
-    public Habit(String name, String date, ArrayList<String> daysSelected) {
-        this.habitName = name;
-        this.creationDate = date;
-        this.frequency = daysSelected;
-    }
+    public Habit(String name, String date, ArrayList<String> daysSelected) throws HabitInvalidException {
+        if (name.replaceAll("\\s+", "") == "" || date.replaceAll("\\s+", "") == "") {
+            throw new HabitInvalidException();
+        }
+        else {
+            this.habitName = name;
+            this.creationDate = date;
+            this.frequency = daysSelected;
+        }
 
+    }
     // Methods
     public String getName() {
         return this.habitName;

@@ -13,8 +13,10 @@ public class SeeHabitActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_see_habit);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
+        getSupportActionBar().hide();
+        getActionBar().hide();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.habitIncompleteFAB);
         fab.setOnClickListener(new View.OnClickListener() {

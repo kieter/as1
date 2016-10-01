@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements AddHabitDialogFra
         final ArrayAdapter<Habit> habitAdapter = new ArrayAdapter<Habit>(this, android.R.layout.simple_list_item_1, list);
         listView.setAdapter(habitAdapter);
 
+
         // Added an observer!
         HabitListController.getHabitList().addListener(new Listener() {
             @Override
@@ -92,20 +93,24 @@ public class MainActivity extends AppCompatActivity implements AddHabitDialogFra
     public void onFinishInputEvent(String name, String date, ArrayList<String> selectedDays) {
         HabitListController hl = new HabitListController();
 
-        Toast.makeText(MainActivity.this, "Name:" + name + "Date:" + date, Toast.LENGTH_SHORT).show();
         String listString = "";
         for (Object s : selectedDays) {
             listString += s + ",";
         }
-        Toast.makeText(MainActivity.this, listString, Toast.LENGTH_SHORT).show();
-        Snackbar.make(findViewById(R.id.AddHabitFAB), "Habit added!", Snackbar.LENGTH_SHORT)
-                .setAction("Action", null).show();
 
-        Habit inputtedHabit = new Habit(name, date, selectedDays);
-        Toast.makeText(MainActivity.this, inputtedHabit.getName(), Toast.LENGTH_SHORT).show();
-        HabitListController.getHabitList().addHabit(inputtedHabit);
+        try {
+            Habit inputtedHabit = new Habit(name, date, selectedDays);
+            Toast.makeText(MainActivity.this, inputtedHabit.getName(), Toast.LENGTH_SHORT).show();
+            HabitListController.getHabitList().addHabit(inputtedHabit);
+            Toast.makeText(MainActivity.this, listString, Toast.LENGTH_SHORT).show();
+            Snackbar.make(findViewById(R.id.AddHabitFAB), "Habit added!", Snackbar.LENGTH_SHORT)
+                    .setAction("Action", null).show();
+            Toast.makeText(MainActivity.this, "Name:" + name + "Date:" + date, Toast.LENGTH_SHORT).show();
+        }
+        catch (HabitInvalidException badHabit) {
+            Toast.makeText(MainActivity.this, "Habit name or date can't be empty.", Toast.LENGTH_SHORT).show();
+        }
 
-//        Habit inputtedHabit = new Habit(name, date, selectedDays);
     }
 
     public void addHabitLongClick(View view) {
