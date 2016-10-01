@@ -7,6 +7,8 @@ import junit.framework.TestCase;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
+
 import com.example.kieter.habittracker.Listener;
 
 public class HabitListTest extends TestCase{
@@ -80,8 +82,14 @@ public class HabitListTest extends TestCase{
             }
         };
         habitList.addListener(l);
+        Habit testHabit = new Habit("Say hi to everyone", date, list);
+        habitList.addHabit(testHabit);
         habitList.addHabit(new Habit(habitName, date, list));
-        assertTrue("StudentList didn't fire an update off", this.updated);
+        assertTrue("HabitList didn't fire an update off", this.updated);
+
+        updated = false;
+        habitList.removeHabit(testHabit);
+        assertTrue("HabitList didn't fire an update", this.updated);
     }
 
     public void testRemoveListeners() {

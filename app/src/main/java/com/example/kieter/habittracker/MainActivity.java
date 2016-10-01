@@ -1,15 +1,19 @@
 package com.example.kieter.habittracker;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -29,12 +33,14 @@ public class MainActivity extends AppCompatActivity implements AddHabitDialogFra
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // TODO put in onResume
         ListView listView = (ListView)findViewById(R.id.listOfHabits);
         Collection<Habit> habits = HabitListController.getHabitList().getHabits();
         final ArrayList<Habit> list = new ArrayList<Habit>(habits);
         final ArrayAdapter<Habit> habitAdapter = new ArrayAdapter<Habit>(this, android.R.layout.simple_list_item_1, list);
         listView.setAdapter(habitAdapter);
 
+        // Added an observer!
         HabitListController.getHabitList().addListener(new Listener() {
             @Override
             public void update() {
@@ -42,6 +48,36 @@ public class MainActivity extends AppCompatActivity implements AddHabitDialogFra
                 Collection<Habit> habits = HabitListController.getHabitList().getHabits();
                 list.addAll(habits);
                 habitAdapter.notifyDataSetChanged();
+            }
+        });
+
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id) {
+                //Toast.makeText(MainActivity.this, "Delete " + list.get(position).toString(), Toast.LENGTH_SHORT).show();
+                final int finalPosition = position;
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setCancelable(true);
+                builder.setMessage("Are you sure you want to delete the habit " + list.get(finalPosition).toString() + "?");
+                builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Habit habitToRemove = list.get(finalPosition);
+                        HabitListController.getHabitList().removeHabit(habitToRemove);
+
+                    }
+                });
+
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Do nothing.
+                    }
+                });
+
+                builder.show();
+
+                return false;
             }
         });
     }
@@ -71,7 +107,6 @@ public class MainActivity extends AppCompatActivity implements AddHabitDialogFra
 
 //        Habit inputtedHabit = new Habit(name, date, selectedDays);
     }
-
 
     public void addHabitLongClick(View view) {
         Intent intent = new Intent(MainActivity.this, HabitActivity.class);

@@ -29,6 +29,7 @@ public class HabitList extends ArrayList {
 
     public void removeHabit(Habit habit) {
         habitList.remove(habit);
+        notifyListeners();
     }
 
     public int size() {
