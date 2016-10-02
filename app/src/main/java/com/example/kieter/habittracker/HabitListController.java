@@ -6,6 +6,7 @@ package com.example.kieter.habittracker;
 
 public class HabitListController {
     private static HabitList habitList = null;
+    private static Habit selectedHabit;
 
     static public HabitList getHabitList() {
         if (habitList == null) {
@@ -20,6 +21,14 @@ public class HabitListController {
 
     public int size() {
         return getHabitList().size();
+    }
+
+    public static void giveSelectedHabit(Habit habit) {
+        selectedHabit = habit;
+    }
+
+    public static Habit getSelectedHabit() {
+        return selectedHabit;
     }
 
 }

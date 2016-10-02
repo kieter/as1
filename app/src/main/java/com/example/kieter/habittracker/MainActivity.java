@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity implements AddHabitDialogFra
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        ListView listView = (ListView)findViewById(R.id.listOfHabits);
+        ListView listView = (ListView) findViewById(R.id.listOfHabits);
         Collection<Habit> habits = HabitListController.getHabitList().getHabits();
         final ArrayList<Habit> list = new ArrayList<Habit>(habits);
         final ArrayAdapter<Habit> habitAdapter = new ArrayAdapter<Habit>(this, android.R.layout.simple_list_item_1, list);
@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements AddHabitDialogFra
         HabitListController.getHabitList().addListener(new Listener() {
             @Override
             public void update() {
+                Toast.makeText(MainActivity.this, "SDFSDFSDFSDF", Toast.LENGTH_SHORT);
                 list.clear();
                 Collection<Habit> habits = HabitListController.getHabitList().getHabits();
                 list.addAll(habits);
@@ -80,6 +81,17 @@ public class MainActivity extends AppCompatActivity implements AddHabitDialogFra
                 return false;
             }
         });
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                final int finalClickPosition = position;
+                HabitListController.giveSelectedHabit(list.get(finalClickPosition));
+                Toast.makeText(MainActivity.this, HabitListController.getSelectedHabit().getName(), Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(MainActivity.this, HabitActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     public void addHabitOnClick(View view) {
@@ -102,13 +114,20 @@ public class MainActivity extends AppCompatActivity implements AddHabitDialogFra
             Toast.makeText(MainActivity.this, inputtedHabit.getName(), Toast.LENGTH_SHORT).show();
             HabitListController.getHabitList().addHabit(inputtedHabit);
             Toast.makeText(MainActivity.this, listString, Toast.LENGTH_SHORT).show();
-            Snackbar.make(findViewById(R.id.AddHabitFAB), "Habit added!", Snackbar.LENGTH_SHORT)
-                    .setAction("Action", null).show();
+            Snackbar.make(findViewById(R.id.AddHabitFAB), "Habit added!", Snackbar.LENGTH_SHORT).show();
+//                    .setAction("Action", null).show();
             Toast.makeText(MainActivity.this, "Name:" + name + "Date:" + date, Toast.LENGTH_SHORT).show();
         }
         catch (HabitInvalidException badHabit) {
             Toast.makeText(MainActivity.this, "Habit name or date can't be empty.", Toast.LENGTH_SHORT).show();
         }
+
+    }
+
+    public void onClickSwitchActivity(View view) {
+
+        Intent intent = new Intent(this, HabitActivity.class);
+        startActivity(intent);
 
     }
 
