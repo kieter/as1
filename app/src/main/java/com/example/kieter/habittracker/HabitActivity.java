@@ -21,6 +21,7 @@ import java.util.Locale;
 
 import static android.R.id.list;
 import static com.example.kieter.habittracker.R.id.completeFAB;
+import static com.example.kieter.habittracker.R.id.wedTextView;
 
 public class HabitActivity extends AppCompatActivity {
 
@@ -31,6 +32,7 @@ public class HabitActivity extends AppCompatActivity {
         TextView habitTextView = (TextView) findViewById(R.id.habitTextView);
         final ListView completionsListView = (ListView) findViewById(R.id.completionsListView);
 
+
         Collection<Habit> habits = HabitListController.getHabitList().getHabits();
         // final ArrayList<Habit> list = new ArrayList<Habit>(habits);
         final Habit selectedHabit = HabitListController.getSelectedHabit();
@@ -38,6 +40,36 @@ public class HabitActivity extends AppCompatActivity {
         habitTextView.setText(selectedHabit.getName());
         final ArrayAdapter<String> dateAdapter = new ArrayAdapter<String>(HabitActivity.this, android.R.layout.simple_list_item_1, selectedHabitDates);
         completionsListView.setAdapter(dateAdapter);
+
+        ArrayList<String> daysActive = new ArrayList<String>(selectedHabit.getFrequency());
+        if (daysActive.contains("Monday")) {
+            TextView monTextView = (TextView)findViewById(R.id.monTextView);
+            monTextView.setTextColor(getResources().getColor(R.color.colorAccent));
+        }
+        if (daysActive.contains("Tuesday")) {
+            TextView tueTextView = (TextView)findViewById(R.id.tueTextView);
+            tueTextView.setTextColor(getResources().getColor(R.color.colorAccent));
+        }
+        if (daysActive.contains("Wednesday")) {
+            TextView wedTextView= (TextView)findViewById(R.id.wedTextView);
+            wedTextView.setTextColor(getResources().getColor(R.color.colorAccent));
+        }
+        if (daysActive.contains("Thursday")) {
+            TextView thursTextView = (TextView)findViewById(R.id.thursTextView);
+            thursTextView.setTextColor(getResources().getColor(R.color.colorAccent));
+        }
+        if (daysActive.contains("Friday")) {
+            TextView friTextView= (TextView)findViewById(R.id.friTextView);
+            friTextView.setTextColor(getResources().getColor(R.color.colorAccent));
+        }
+        if (daysActive.contains("Saturday")) {
+            TextView satTextView = (TextView)findViewById(R.id.satTextView);
+            satTextView.setTextColor(getResources().getColor(R.color.colorAccent));
+        }
+        if (daysActive.contains("Sunday")) {
+            TextView sunTextView = (TextView)findViewById(R.id.sunTextView);
+            sunTextView.setTextColor(getResources().getColor(R.color.colorAccent));
+        }
 
         // Added an observer!
         selectedHabit.addListener(new Listener() {
@@ -56,7 +88,7 @@ public class HabitActivity extends AppCompatActivity {
                 Toast.makeText(HabitActivity.this, "Habit completed!", Toast.LENGTH_SHORT).show();
                 Toast.makeText(HabitActivity.this, selectedHabit.getCreationDate(), Toast.LENGTH_SHORT).show();
                 Date date = new Date();
-                String dateFormat = "yyyy/MM/dd";
+                String dateFormat = "yyyy/MM/dd hh:mm:ss";
                 SimpleDateFormat sdf = new SimpleDateFormat(dateFormat, Locale.CANADA);
                 String format = sdf.format(date);
                 selectedHabit.addCompletion(format);

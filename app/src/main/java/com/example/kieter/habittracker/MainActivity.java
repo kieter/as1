@@ -13,18 +13,32 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
+import static android.R.id.text1;
 import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
+import static java.util.Arrays.asList;
 
 public class MainActivity extends AppCompatActivity implements AddHabitDialogFragment.HabitInputDialogListener {
+
+    private static final String FILENAME = "data.sav";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +67,7 @@ public class MainActivity extends AppCompatActivity implements AddHabitDialogFra
         });
 
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            // TODO long clicking also clicks?
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id) {
                 //Toast.makeText(MainActivity.this, "Delete " + list.get(position).toString(), Toast.LENGTH_SHORT).show();
@@ -77,6 +92,7 @@ public class MainActivity extends AppCompatActivity implements AddHabitDialogFra
                 });
 
                 builder.show();
+
 
                 return false;
             }
@@ -124,12 +140,38 @@ public class MainActivity extends AppCompatActivity implements AddHabitDialogFra
 
     }
 
-    public void onClickSwitchActivity(View view) {
-
-        Intent intent = new Intent(this, HabitActivity.class);
-        startActivity(intent);
-
+    public String habitSubText(Habit habit) {
+        String subText = "";
+        List<String> daysOfWeek = new ArrayList<String>(asList( "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"));
+        for (String day : daysOfWeek) {
+            if (habit.getFrequency().contains(day)) {
+                subText += day.charAt(0);
+            }
+        }
+        return subText;
     }
+
+    private void saveInFile() {
+        try {
+            FileOutputStream fos = openFileOutput(FILENAME, 0);
+            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(fos));
+
+            Gson gson = new Gson();
+
+        }
+        catch (FileNotFoundException e) {
+            throw new RuntimeException();
+        }
+    }
+
+
+//
+//    public void onClickSwitchActivity(View view) {
+//
+//        Intent intent = new Intent(this, HabitActivity.class);
+//        startActivity(intent);
+//
+//    }
 
 
 // Settings, don't need them I think.

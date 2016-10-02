@@ -15,7 +15,7 @@
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
         android:id="@+id/completionsListView"
-        android:layout_below="@+id/habitTextView" />
+        android:layout_below="@+id/completionsTextView" />
 
     <TextView
         android:text="HabitName"
@@ -47,10 +47,88 @@
         android:clickable="true"
         app:fabSize="normal"
         app:srcCompat="@drawable/ic_action_name"
-        android:layout_marginBottom="17dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginEnd="22dp"
         android:onClick="onClickBackButton (HabitActivity)"
         android:id="@+id/completeFAB"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:text="Completions:"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/habitTextView"
+        android:layout_alignParentStart="true"
+        android:paddingRight="16dp"
+        android:paddingLeft="16dp"
+        android:id="@+id/completionsTextView"
+        android:layout_alignParentEnd="true"
+        tools:text="Completions:"
+        android:textSize="18sp" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_above="@+id/completionsTextView"
+        android:layout_alignParentStart="true">
+
+        <TextView
+            android:text="S"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/sunTextView"
+            android:layout_weight="0.10"
+            android:textSize="44sp" />
+
+        <TextView
+            android:text="M"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/monTextView"
+            android:layout_weight="0.10"
+            android:textSize="44sp" />
+
+        <TextView
+            android:text="T"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/tueTextView"
+            android:textSize="44sp"
+            android:layout_weight="0.09" />
+
+        <TextView
+            android:text="W"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/wedTextView"
+            android:textSize="44sp"
+            android:layout_weight="0.08" />
+
+        <TextView
+            android:text="R"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/thursTextView"
+            android:layout_weight="0.09"
+            android:textSize="44sp" />
+
+        <TextView
+            android:text="F"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/friTextView"
+            android:layout_weight="0.10"
+            android:textSize="44sp" />
+
+        <TextView
+            android:text="S"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/satTextView"
+            android:layout_weight="0.04"
+            android:textSize="44sp" />
+    </LinearLayout>
+
 </RelativeLayout>
