@@ -22,12 +22,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -38,17 +43,20 @@ import static java.util.Arrays.asList;
 
 public class MainActivity extends AppCompatActivity implements AddHabitDialogFragment.HabitInputDialogListener {
 
-    private static final String FILENAME = "data.sav";
+    private static final String FILENAME = "dataHabitTracker.sav";
+    private Collection<Habit> habitList = new ArrayList<Habit>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        loadFromFile();
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         ListView listView = (ListView) findViewById(R.id.listOfHabits);
-        Collection<Habit> habits = HabitListController.getHabitList().getHabits();
+//        Collection<Habit> habits = HabitListController.getHabitList().getHabits();
+        Collection<Habit> habits = loadFromFile();
         final ArrayList<Habit> list = new ArrayList<Habit>(habits);
         final ArrayAdapter<Habit> habitAdapter = new ArrayAdapter<Habit>(this, android.R.layout.simple_list_item_1, list);
         listView.setAdapter(habitAdapter);
@@ -80,6 +88,7 @@ public class MainActivity extends AppCompatActivity implements AddHabitDialogFra
                     public void onClick(DialogInterface dialog, int which) {
                         Habit habitToRemove = list.get(finalPosition);
                         HabitListController.getHabitList().removeHabit(habitToRemove);
+                        saveInFile(HabitListController.getHabitList().getHabits());
 
                     }
                 });
@@ -133,6 +142,7 @@ public class MainActivity extends AppCompatActivity implements AddHabitDialogFra
             Snackbar.make(findViewById(R.id.AddHabitFAB), "Habit added!", Snackbar.LENGTH_SHORT).show();
 //                    .setAction("Action", null).show();
             Toast.makeText(MainActivity.this, "Name:" + name + "Date:" + date, Toast.LENGTH_SHORT).show();
+            saveInFile(HabitListController.getHabitList().getHabits());
         }
         catch (HabitInvalidException badHabit) {
             Toast.makeText(MainActivity.this, "Habit name or date can't be empty.", Toast.LENGTH_SHORT).show();
@@ -151,15 +161,43 @@ public class MainActivity extends AppCompatActivity implements AddHabitDialogFra
         return subText;
     }
 
-    private void saveInFile() {
+
+    private Collection<Habit> loadFromFile() {
+        try {
+            FileInputStream fis = openFileInput(FILENAME);
+            BufferedReader in = new BufferedReader(new InputStreamReader(fis));
+
+            Gson gson = new Gson();
+
+            Type listType = new TypeToken<ArrayList<Habit>>(){}.getType();
+
+            habitList = gson.fromJson(in, listType);
+
+        }
+        catch (FileNotFoundException e) {
+            habitList = new ArrayList<Habit>();
+        }
+        catch (IOException e) {
+            throw new RuntimeException();
+        }
+        return habitList;
+    }
+
+    private void saveInFile(Collection<Habit> habits) {
         try {
             FileOutputStream fos = openFileOutput(FILENAME, 0);
             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(fos));
 
             Gson gson = new Gson();
 
+            gson.toJson(habits, out);
+            out.flush();
+            fos.close();
         }
         catch (FileNotFoundException e) {
+            throw new RuntimeException();
+        }
+        catch (IOException e) {
             throw new RuntimeException();
         }
     }

@@ -13,6 +13,18 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,7 +36,8 @@ import static com.example.kieter.habittracker.R.id.completeFAB;
 import static com.example.kieter.habittracker.R.id.wedTextView;
 
 public class HabitActivity extends AppCompatActivity {
-
+    private static final String FILENAME = "dataHabitTracker.sav";
+    private Collection<Habit> habitList = new ArrayList<Habit>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,7 +46,7 @@ public class HabitActivity extends AppCompatActivity {
         final ListView completionsListView = (ListView) findViewById(R.id.completionsListView);
 
 
-        Collection<Habit> habits = HabitListController.getHabitList().getHabits();
+        Collection<Habit> habits = loadFromFile();
         // final ArrayList<Habit> list = new ArrayList<Habit>(habits);
         final Habit selectedHabit = HabitListController.getSelectedHabit();
         final ArrayList<String> selectedHabitDates = selectedHabit.getCompletions();
@@ -92,6 +105,7 @@ public class HabitActivity extends AppCompatActivity {
                 SimpleDateFormat sdf = new SimpleDateFormat(dateFormat, Locale.CANADA);
                 String format = sdf.format(date);
                 selectedHabit.addCompletion(format);
+                saveInFile(HabitListController.getHabitList().getHabits());
             }
         });
 
@@ -121,6 +135,7 @@ public class HabitActivity extends AppCompatActivity {
 //                        }
 //                        Toast.makeText(HabitActivity.this, testString, Toast.LENGTH_SHORT).show();
                         dateAdapter.notifyDataSetChanged();
+                        saveInFile(HabitListController.getHabitList().getHabits());
                     }
                 });
 
@@ -134,6 +149,46 @@ public class HabitActivity extends AppCompatActivity {
                 return false;
             }
         });
+    }
+
+    private Collection<Habit> loadFromFile() {
+        try {
+            FileInputStream fis = openFileInput(FILENAME);
+            BufferedReader in = new BufferedReader(new InputStreamReader(fis));
+
+            Gson gson = new Gson();
+
+            Type listType = new TypeToken<ArrayList<Habit>>(){}.getType();
+
+            habitList = gson.fromJson(in, listType);
+
+        }
+        catch (FileNotFoundException e) {
+            habitList = new ArrayList<Habit>();
+        }
+        catch (IOException e) {
+            throw new RuntimeException();
+        }
+        return habitList;
+    }
+
+    private void saveInFile(Collection<Habit> habits) {
+        try {
+            FileOutputStream fos = openFileOutput(FILENAME, 0);
+            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(fos));
+
+            Gson gson = new Gson();
+
+            gson.toJson(habits, out);
+            out.flush();
+            fos.close();
+        }
+        catch (FileNotFoundException e) {
+            throw new RuntimeException();
+        }
+        catch (IOException e) {
+            throw new RuntimeException();
+        }
     }
 }
 
