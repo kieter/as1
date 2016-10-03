@@ -15,7 +15,7 @@ import java.util.Date;
 import java.util.Locale;
 
 public class HabitTest extends TestCase{
-    public void testHabit () {
+    public void testHabit () throws HabitInvalidException {
         String date = "";
         ArrayList list = new ArrayList();
 
@@ -25,7 +25,7 @@ public class HabitTest extends TestCase{
         assertTrue("Habit name is not equal", habitName.toString().equals(habit.getName()));
     }
 
-    public void testGetCreationDate() {
+    public void testGetCreationDate() throws HabitInvalidException {
         String habitName = "Google dank memes";
         String date = "1997/01/21";
         ArrayList list = new ArrayList();
@@ -34,7 +34,7 @@ public class HabitTest extends TestCase{
         assertTrue("Date is not equal", testHabit.getCreationDate().equals(date));
     }
 
-    public void testGetFrequency() {
+    public void testGetFrequency() throws HabitInvalidException {
         String habitName = "Program this assignment";
         String date = "2016/09/01";
         ArrayList<String> list1 = new ArrayList<String>(Arrays.asList("Saturday", "Sunday"));
@@ -48,7 +48,7 @@ public class HabitTest extends TestCase{
 
 
     }
-    public void testIsToday() {
+    public void testIsToday() throws HabitInvalidException {
         String habitName = "Wear pink";
         // "On October 3rd, he asked me what day it was. It's October 3rd."
         String date = "2004/10/03";

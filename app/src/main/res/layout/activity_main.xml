@@ -7,22 +7,6 @@
     android:fitsSystemWindows="true"
     tools:context="com.example.kieter.habittracker.MainActivity">
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/AddHabitFAB"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        android:src="@mipmap/text_plus"
-        android:clickable="true"
-        app:backgroundTint="@color/colorAccent"
-        app:fabSize="normal"
-        android:focusable="true"
-        android:adjustViewBounds="false"
-        android:background="@android:color/holo_red_light"
-        android:onClick="addHabitOnClick"
-        android:longClickable="true" />
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -42,16 +26,20 @@
     </RelativeLayout>
 
     <android.support.design.widget.FloatingActionButton
+        android:id="@+id/AddHabitFAB"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@mipmap/text_plus"
         android:clickable="true"
-        app:fabSize="mini"
-        app:srcCompat="@android:drawable/arrow_up_float"
-        android:id="@+id/floatingActionButton"
-        android:layout_gravity="top|right"
-        app:layout_anchorGravity="bottom|center_horizontal"
-        tools:ignore="RtlHardcoded"
-        android:onClick="onClickSwitchActivity" />
+        app:backgroundTint="@color/colorAccent"
+        app:fabSize="normal"
+        android:focusable="true"
+        android:adjustViewBounds="false"
+        android:background="@android:color/holo_red_light"
+        android:onClick="addHabitOnClick"
+        android:longClickable="true" />
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"

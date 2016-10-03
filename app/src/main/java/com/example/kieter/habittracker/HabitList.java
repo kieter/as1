@@ -17,7 +17,7 @@ public class HabitList extends ArrayList {
         listeners = new ArrayList<Listener>();
     }
 
-    public Collection<Habit> getHabits() {
+    public ArrayList<Habit> getHabits() {
         return habitList;
     }
 
@@ -30,6 +30,14 @@ public class HabitList extends ArrayList {
     public void removeHabit(Habit habit) {
         habitList.remove(habit);
         notifyListeners();
+    }
+
+    public String printHabit() {
+        String s = "";
+        for (Habit habit : habitList) {
+            s += habit.getName() + " ";
+        }
+        return s;
     }
 
     public int size() {
@@ -53,4 +61,9 @@ public class HabitList extends ArrayList {
     public void removeListener(Listener l) {
         listeners.remove(l);
     }
+
+    public void clearListeners() {
+        listeners.clear();
+    }
+
 }

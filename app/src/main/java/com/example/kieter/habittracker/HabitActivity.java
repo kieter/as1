@@ -24,6 +24,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.lang.reflect.Array;
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -36,8 +37,12 @@ import static com.example.kieter.habittracker.R.id.completeFAB;
 import static com.example.kieter.habittracker.R.id.wedTextView;
 
 public class HabitActivity extends AppCompatActivity {
-    private static final String FILENAME = "dataHabitTracker.sav";
-    private Collection<Habit> habitList = new ArrayList<Habit>();
+   // private static final String FILENAME = "dataHabitTracker.sav";
+    //private Collection<Habit> habitList = new ArrayList<Habit>();
+    private static final String FILENAME = "data.sav";
+    ArrayList<Habit> listOfHabits2 = MainActivity.listOfHabits;
+    //MainActivity.
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,7 +51,7 @@ public class HabitActivity extends AppCompatActivity {
         final ListView completionsListView = (ListView) findViewById(R.id.completionsListView);
 
 
-        Collection<Habit> habits = loadFromFile();
+//        Collection<Habit> habits = loadFromFile();
         // final ArrayList<Habit> list = new ArrayList<Habit>(habits);
         final Habit selectedHabit = HabitListController.getSelectedHabit();
         final ArrayList<String> selectedHabitDates = selectedHabit.getCompletions();
@@ -85,11 +90,13 @@ public class HabitActivity extends AppCompatActivity {
         }
 
         // Added an observer!
+        selectedHabit.clearListeners();
         selectedHabit.addListener(new Listener() {
             @Override
             public void update() {
 //                selectedHabitDates.clear();
 //                selectedHabitDates.addAll(selectedHabit.getCompletions());
+
                 dateAdapter.notifyDataSetChanged();
             }
         });
@@ -105,7 +112,7 @@ public class HabitActivity extends AppCompatActivity {
                 SimpleDateFormat sdf = new SimpleDateFormat(dateFormat, Locale.CANADA);
                 String format = sdf.format(date);
                 selectedHabit.addCompletion(format);
-                saveInFile(HabitListController.getHabitList().getHabits());
+                saveInFile();
             }
         });
 
@@ -129,13 +136,13 @@ public class HabitActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         selectedHabitDates.remove(finalPosition);
-//                        String testString = "";
-//                        for (String s: selectedHabit.getCompletions()) {
-//                            testString += s + ",";
-//                        }
-//                        Toast.makeText(HabitActivity.this, testString, Toast.LENGTH_SHORT).show();
+                        String testString = "";
+                        for (String s: selectedHabit.getCompletions()) {
+                            testString += s + ",";
+                        }
+                        saveInFile();
+                        Toast.makeText(HabitActivity.this, testString, Toast.LENGTH_SHORT).show();
                         dateAdapter.notifyDataSetChanged();
-                        saveInFile(HabitListController.getHabitList().getHabits());
                     }
                 });
 
@@ -151,7 +158,8 @@ public class HabitActivity extends AppCompatActivity {
         });
     }
 
-    private Collection<Habit> loadFromFile() {
+    private void loadFromFile() {
+        ArrayList<Habit> listOfHabits;
         try {
             FileInputStream fis = openFileInput(FILENAME);
             BufferedReader in = new BufferedReader(new InputStreamReader(fis));
@@ -159,36 +167,51 @@ public class HabitActivity extends AppCompatActivity {
             Gson gson = new Gson();
 
             Type listType = new TypeToken<ArrayList<Habit>>(){}.getType();
+            listOfHabits = gson.fromJson(in, listType);
 
-            habitList = gson.fromJson(in, listType);
+            //Type listType = new TypeToken<HabitList>(){}.getType();
+
+            //Toast.makeText(this, "From load file: " + HabitListController.getHabitList().printHabit(), Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "Size of loaded: " + Integer.toString(HabitListController.getHabitList().size()), Toast.LENGTH_SHORT).show();
+            //HabitList test = gson.fromJson(in, listType);
+
+            //HabitListController.giveHabitList((HabitList) gson.fromJson(in, listType));
+            //HabitListController.giveHabitList(test);
+            // Toast.makeText(this, "Size of loaded: " + Integer.toString(HabitListController.getHabitList().size()), Toast.LENGTH_SHORT).show();
+            // Toast.makeText(this, "Stuff loaded: " + HabitListController.getHabitList().printHabit(), Toast.LENGTH_SHORT).show();
+
 
         }
         catch (FileNotFoundException e) {
-            habitList = new ArrayList<Habit>();
+            //HabitListController habitListController = new HabitListController() ;
         }
-        catch (IOException e) {
-            throw new RuntimeException();
-        }
-        return habitList;
     }
 
-    private void saveInFile(Collection<Habit> habits) {
+    private void saveInFile() {
         try {
             FileOutputStream fos = openFileOutput(FILENAME, 0);
             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(fos));
-
             Gson gson = new Gson();
+            ArrayList<Habit> temp = HabitListController.getHabitList().getHabits();
 
-            gson.toJson(habits, out);
+            Toast.makeText(this, "Size of saved: " + Integer.toString(HabitListController.getHabitList().size()), Toast.LENGTH_SHORT);
+            Toast.makeText(this, "Stuff saved: " + HabitListController.getHabitList().printHabit(), Toast.LENGTH_SHORT).show();
+
+            gson.toJson(temp, out);
+
             out.flush();
             fos.close();
         }
         catch (FileNotFoundException e) {
-            throw new RuntimeException();
+            e.printStackTrace();
         }
         catch (IOException e) {
-            throw new RuntimeException();
+            e.printStackTrace();
         }
     }
+
+
+
+
 }
 

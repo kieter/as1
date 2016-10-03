@@ -96,5 +96,8 @@ public class Habit {
         listeners.remove(l);
     }
 
+    public void clearListeners() {
+        listeners.clear();
+    }
 
 }
