@@ -49,40 +49,50 @@ import java.util.List;
 
 import static java.util.Arrays.asList;
 
+/*
+Main activity will set up all the XML in activity_main, it is the activity in which users are able
+to add and view habits, tapping on habits will show more information, long pressing will permit
+the user to delete the habit.
+Adding a habit uses a custom dialog, MainActivity receives information from that dialogue via a
+function call.
+Main activity also handles persistence using GSON/JSON. It saves after any edit.
+ */
 public class MainActivity extends AppCompatActivity implements AddHabitDialogFragment.HabitInputDialogListener {
 
+    // File name for saving/loading
     private static final String FILENAME = "data.sav";
+    // For saving/loading data across activities
     public static ArrayList<Habit> listOfHabits;
-//    private HabitList habitList = new;
 
     @Override
+    /*
+    On create will initialize views, array adapters, and all click listeners
+     */
     protected void onCreate(Bundle savedInstanceState) {
+        // Load saved JSON, if there is one, otherwise create null.
         loadFromFile();
         for (Habit habit : listOfHabits) {
             HabitListController.addHabit(habit);
         }
         super.onCreate(savedInstanceState);
 
-        //Toast.makeText(this, HabitListController.getHabitList().printHabit(), Toast.LENGTH_SHORT).show();
+        // Initialize views
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-//        HabitListController habitListController = new HabitListController();
-
         ListView listView = (ListView) findViewById(R.id.listOfHabits);
-//        Collection<Habit> habits = HabitListController.getHabitList().getHabits();
 
-        //final Collection<Habit> habits = HabitListController.getHabitList().getHabits();
-        //final ArrayList<Habit> list = new ArrayList<Habit>(habits);
+        // Initialize and set ArrayAdapter
         final ArrayList<Habit> list = listOfHabits;
         final ArrayAdapter<Habit> habitAdapter = new ArrayAdapter<Habit>(this, android.R.layout.simple_list_item_1, list);
         listView.setAdapter(habitAdapter);
 
-
+        // Clear observers
         HabitListController.getHabitList().clearListeners();
         // Added an observer!
         HabitListController.getHabitList().addListener(new Listener() {
             @Override
+            // Update refreshes the data held in the instance of the habit list.
             public void update() {
                 list.clear();
                 Collection<Habit> habits = HabitListController.getHabitList().getHabits();
@@ -91,17 +101,37 @@ public class MainActivity extends AppCompatActivity implements AddHabitDialogFra
             }
         });
 
-        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            // TODO long clicking also clicks?
+        // Set up array onItemClickListener
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
+            /*
+            Once the user clicks an element in the ListView, it will create a new intent to go
+            to an activity that displays extra information about that habit.
+             */
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                final int finalClickPosition = position;
+                HabitListController.giveSelectedHabit(list.get(finalClickPosition));
+                Intent intent = new Intent(MainActivity.this, HabitActivity.class);
+                startActivity(intent);
+                saveInFile();
+            } // end of onItem Click
+        }); // end of onItemClickListener
+
+        // Set up array onItemLongClickListener
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            /*
+            Should the user long click an item in the array list they will receive a prompt of
+            whether to delete or cancel the long clicked item in the ListView.
+             */
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id) {
-                //Toast.makeText(MainActivity.this, "Delete " + list.get(position).toString(), Toast.LENGTH_SHORT).show();
                 final int finalPosition = position;
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                 builder.setCancelable(true);
                 builder.setMessage("Are you sure you want to delete the habit " + list.get(finalPosition).toString() + "?");
                 builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                     @Override
+                    // On click the positive option, confirm deletion in the model and save
                     public void onClick(DialogInterface dialog, int which) {
                         Habit habitToRemove = list.get(finalPosition);
                         HabitListController.removeHabit(habitToRemove);
@@ -111,36 +141,57 @@ public class MainActivity extends AppCompatActivity implements AddHabitDialogFra
 
                 builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
+                    // On click the negative button, cancel the dialog.
                     public void onClick(DialogInterface dialog, int which) {
                         // Do nothing.
                     }
                 });
-
                 builder.show();
-                return false;
-            }
-        });
+                return true;
+            } // end of onItemLongClick
+        }); // end of onItemLongClickListener
+    } // end of onCreate
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                final int finalClickPosition = position;
-                HabitListController.giveSelectedHabit(list.get(finalClickPosition));
-                //Toast.makeText(MainActivity.this, HabitListController.getSelectedHabit().getName(), Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(MainActivity.this, HabitActivity.class);
-                startActivity(intent);
-                saveInFile();
-            }
-        });
-    }
-
+    /*
+    addHabitOnClick creates an instance of the custom dialog addHabitDialog that the user uses
+    to input information about a new habit.
+     */
     public void addHabitOnClick(View view) {
         android.app.FragmentManager manager = getFragmentManager();
         AddHabitDialogFragment addHabitDialog = new AddHabitDialogFragment();
         addHabitDialog.show(manager, "addHabitDialog");
+    } // end of addHabitOnClick
 
-    }
+    /*
+    onFinishInputEvent will be called by the addHabitDialog once the user confirms their input of
+    a new habit, this method will turn the user's input into an instance of a Habit and append that
+    habit to the static habit list and it will save the changes to internal storage.
+     */
+    public void onFinishInputEvent(String name, String date, ArrayList<String> selectedDays) {
+        String listString = "";
+        for (Object s : selectedDays) {
+            listString += s + ",";
+        }
 
+        try {
+            Habit inputtedHabit = new Habit(name, date, selectedDays);
+            HabitListController.addHabit(inputtedHabit);
+            Snackbar.make(findViewById(R.id.AddHabitFAB), "Habit added!", Snackbar.LENGTH_SHORT).show();
+            saveInFile();
+        }
+        // If the user leaves the habit name or date blank inputting will be cancelled and the user
+        // will receive a cancel Toast.
+        catch (HabitInvalidException badHabit) {
+            Toast.makeText(MainActivity.this, "Habit name or date can't be empty.", Toast.LENGTH_SHORT).show();
+        }
+
+    } // end of onFinishInputEvent
+
+    /*
+    Load from file will open the persistent file from internal storage and store the list of habits
+    stored into a static variable listOfHabits that persists between activities so that the proper
+    information can be loaded and stored upon any edits to habits.
+     */
     private void loadFromFile() {
         try {
             FileInputStream fis = openFileInput(FILENAME);
@@ -150,34 +201,21 @@ public class MainActivity extends AppCompatActivity implements AddHabitDialogFra
 
             Type listType = new TypeToken<ArrayList<Habit>>(){}.getType();
             listOfHabits = gson.fromJson(in, listType);
-
-            //Type listType = new TypeToken<HabitList>(){}.getType();
-
-            //Toast.makeText(this, "From load file: " + HabitListController.getHabitList().printHabit(), Toast.LENGTH_SHORT).show();
-            //Toast.makeText(this, "Size of loaded: " + Integer.toString(HabitListController.getHabitList().size()), Toast.LENGTH_SHORT).show();
-            //HabitList test = gson.fromJson(in, listType);
-
-            //HabitListController.giveHabitList((HabitList) gson.fromJson(in, listType));
-            //HabitListController.giveHabitList(test);
-           // Toast.makeText(this, "Size of loaded: " + Integer.toString(HabitListController.getHabitList().size()), Toast.LENGTH_SHORT).show();
-           // Toast.makeText(this, "Stuff loaded: " + HabitListController.getHabitList().printHabit(), Toast.LENGTH_SHORT).show();
-
-
         }
         catch (FileNotFoundException e) {
-            //HabitListController habitListController = new HabitListController() ;
         }
-    }
+    } // end of loadFromFile
 
+    /*
+    Save from file alters the persistent file in internal storage to keep consistency with what's
+    going on with user edits in the app.
+     */
     private void saveInFile() {
         try {
             FileOutputStream fos = openFileOutput(FILENAME, 0);
             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(fos));
             Gson gson = new Gson();
             ArrayList<Habit> temp = HabitListController.getHabitList().getHabits();
-
-            //Toast.makeText(this, "Size of saved: " + Integer.toString(HabitListController.getHabitList().size()), Toast.LENGTH_SHORT);
-            //Toast.makeText(this, "Stuff saved: " + HabitListController.getHabitList().printHabit(), Toast.LENGTH_SHORT).show();
 
             gson.toJson(temp, out);
 
@@ -190,75 +228,5 @@ public class MainActivity extends AppCompatActivity implements AddHabitDialogFra
         catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public void onFinishInputEvent(String name, String date, ArrayList<String> selectedDays) {
-        String listString = "";
-        for (Object s : selectedDays) {
-            listString += s + ",";
-        }
-
-        try {
-            Habit inputtedHabit = new Habit(name, date, selectedDays);
-            //Toast.makeText(MainActivity.this, inputtedHabit.getName(), Toast.LENGTH_SHORT).show();
-            HabitListController.addHabit(inputtedHabit);
-            //Toast.makeText(MainActivity.this, listString, Toast.LENGTH_SHORT).show();
-            Snackbar.make(findViewById(R.id.AddHabitFAB), "Habit added!", Snackbar.LENGTH_SHORT).show();
-//                    .setAction("Action", null).show();
-//            Toast.makeText(MainActivity.this, "Name:" + name + "Date:" + date, Toast.LENGTH_SHORT).show();
-            //Toast.makeText(MainActivity.this, "Size of save: " + Integer.toString(HabitListController.getHabitList().size()), Toast.LENGTH_SHORT).show();
-            saveInFile();
-        }
-        catch (HabitInvalidException badHabit) {
-            Toast.makeText(MainActivity.this, "Habit name or date can't be empty.", Toast.LENGTH_SHORT).show();
-        }
-
-    }
-
-    public String habitSubText(Habit habit) {
-        String subText = "";
-        List<String> daysOfWeek = new ArrayList<String>(asList( "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"));
-        for (String day : daysOfWeek) {
-            if (habit.getFrequency().contains(day)) {
-                subText += day.charAt(0);
-            }
-        }
-        return subText;
-    }
-
-
-
-
-//
-//    public void onClickSwitchActivity(View view) {
-//
-//        Intent intent = new Intent(this, HabitActivity.class);
-//        startActivity(intent);
-//
-//    }
-
-
-// Settings, don't need them I think.
-//
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.menu_main, menu);
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        // Handle action bar item clicks here. The action bar will
-//        // automatically handle clicks on the Home/Up button, so long
-//        // as you specify a parent activity in AndroidManifest.xml.
-//        int id = item.getItemId();
-//
-//        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
-//
-//        return super.onOptionsItemSelected(item);
-//    }
-}
+    } // end of saveInFile
+} // end of MainActivity

@@ -21,13 +21,11 @@ package com.example.kieter.habittracker;
 /**
  * Created by kiete on 9/24/2016.
  */
+
 import junit.framework.TestCase;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
-
-import com.example.kieter.habittracker.Listener;
 
 public class HabitListTest extends TestCase{
     public void testEmptyHabitList() {

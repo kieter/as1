@@ -19,10 +19,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package com.example.kieter.habittracker;
 
 import android.content.DialogInterface;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -34,8 +34,6 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import org.w3c.dom.Text;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileInputStream;
@@ -44,43 +42,47 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.lang.reflect.Array;
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.Locale;
 
-import static android.R.id.list;
-import static com.example.kieter.habittracker.R.id.completeFAB;
-import static com.example.kieter.habittracker.R.id.wedTextView;
-
+/*
+HabitActivity will set up all the XML in activity_habit, it is the activity in which users are
+able to view more information about the habit that they clicked in MainActivity like the days
+the habit is active, any completions, and how many completions that the habit has.
+Main activity also handles persistence using GSON/JSON. It saves after any edit.
+ */
 public class HabitActivity extends AppCompatActivity {
-   // private static final String FILENAME = "dataHabitTracker.sav";
-    //private Collection<Habit> habitList = new ArrayList<Habit>();
+
+    // for saving data in internal storage
     private static final String FILENAME = "data.sav";
     ArrayList<Habit> listOfHabits2 = MainActivity.listOfHabits;
-    //MainActivity.
 
     @Override
+    /*
+    onCreate will load all the information of the selected habit form MainActivity (passed by the
+    habit list controller) and display it with views. The user is also able to complete the habit
+    from this screen and it will increase their count.
+    The user may also delete habit completions from this activity.
+     */
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        final Habit selectedHabit = HabitListController.getSelectedHabit();
+        // Initialize views
         setContentView(R.layout.activity_habit);
+        // Display habit name
         TextView habitTextView = (TextView) findViewById(R.id.habitTextView);
+        habitTextView.setText(selectedHabit.getName());
+        // Set up array adapter
         final ListView completionsListView = (ListView) findViewById(R.id.completionsListView);
         final TextView counterTextView = (TextView)findViewById(R.id.completionCountTextView);
-
-
-//        Collection<Habit> habits = loadFromFile();
-        // final ArrayList<Habit> list = new ArrayList<Habit>(habits);
-        final Habit selectedHabit = HabitListController.getSelectedHabit();
         final ArrayList<String> selectedHabitDates = selectedHabit.getCompletions();
-        habitTextView.setText(selectedHabit.getName());
         final ArrayAdapter<String> dateAdapter = new ArrayAdapter<String>(HabitActivity.this, android.R.layout.simple_list_item_1, selectedHabitDates);
+        // Set up more views
         completionsListView.setAdapter(dateAdapter);
         counterTextView.setText(Integer.toString(selectedHabit.getCompletions().size()));
-
         ArrayList<String> daysActive = new ArrayList<String>(selectedHabit.getFrequency());
         if (daysActive.contains("Monday")) {
             TextView monTextView = (TextView)findViewById(R.id.monTextView);
@@ -117,9 +119,6 @@ public class HabitActivity extends AppCompatActivity {
         selectedHabit.addListener(new Listener() {
             @Override
             public void update() {
-//                selectedHabitDates.clear();
-//                selectedHabitDates.addAll(selectedHabit.getCompletions());
-
                 dateAdapter.notifyDataSetChanged();
             }
         });

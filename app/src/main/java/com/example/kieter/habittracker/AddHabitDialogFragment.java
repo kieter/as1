@@ -25,7 +25,6 @@ import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.text.InputType;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -38,7 +37,6 @@ import android.widget.LinearLayout;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
 
 /**

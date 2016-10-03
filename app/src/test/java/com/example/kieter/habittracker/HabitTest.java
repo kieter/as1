@@ -18,14 +18,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package com.example.kieter.habittracker;
 
-/**
- * Created by kiete on 9/24/2016.
- */
 
 import junit.framework.TestCase;
-import com.example.kieter.habittracker.Habit;
-
-import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
