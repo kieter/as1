@@ -18,6 +18,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package com.example.kieter.habittracker;
 
+/*
+Listener is used to update the views once the controller updates the model.
+ */
 public interface Listener {
+    /*
+    When update is implemented it refreshes the data that the views are using to display information
+     */
     public void update();
 }
