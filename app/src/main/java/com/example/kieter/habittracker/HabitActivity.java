@@ -16,6 +16,8 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import org.w3c.dom.Text;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileInputStream;
@@ -49,6 +51,7 @@ public class HabitActivity extends AppCompatActivity {
         setContentView(R.layout.activity_habit);
         TextView habitTextView = (TextView) findViewById(R.id.habitTextView);
         final ListView completionsListView = (ListView) findViewById(R.id.completionsListView);
+        final TextView counterTextView = (TextView)findViewById(R.id.completionCountTextView);
 
 
 //        Collection<Habit> habits = loadFromFile();
@@ -58,6 +61,7 @@ public class HabitActivity extends AppCompatActivity {
         habitTextView.setText(selectedHabit.getName());
         final ArrayAdapter<String> dateAdapter = new ArrayAdapter<String>(HabitActivity.this, android.R.layout.simple_list_item_1, selectedHabitDates);
         completionsListView.setAdapter(dateAdapter);
+        counterTextView.setText(Integer.toString(selectedHabit.getCompletions().size()) );
 
         ArrayList<String> daysActive = new ArrayList<String>(selectedHabit.getFrequency());
         if (daysActive.contains("Monday")) {
@@ -89,6 +93,7 @@ public class HabitActivity extends AppCompatActivity {
             sunTextView.setTextColor(getResources().getColor(R.color.colorAccent));
         }
 
+
         // Added an observer!
         selectedHabit.clearListeners();
         selectedHabit.addListener(new Listener() {
@@ -111,6 +116,7 @@ public class HabitActivity extends AppCompatActivity {
                 String dateFormat = "yyyy/MM/dd hh:mm:ss";
                 SimpleDateFormat sdf = new SimpleDateFormat(dateFormat, Locale.CANADA);
                 String format = sdf.format(date);
+                counterTextView.setText(Integer.toString(selectedHabit.getCompletions().size() + 1) );
                 selectedHabit.addCompletion(format);
                 saveInFile();
             }
