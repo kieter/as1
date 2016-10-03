@@ -51,14 +51,6 @@ public class HabitList extends ArrayList {
         notifyListeners();
     }
 
-    public String printHabit() {
-        String s = "";
-        for (Habit habit : habitList) {
-            s += habit.getName() + " ";
-        }
-        return s;
-    }
-
     public int size() {
         return habitList.size();
     }
