@@ -1,3 +1,21 @@
+/*
+Habit Tracker - Tracks Daily Habits
+Copyright (C) 2016 Kieter Philip Balisnomo, Abram Hindle
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.example.kieter.habittracker;
 
 import android.content.DialogInterface;
@@ -61,7 +79,7 @@ public class HabitActivity extends AppCompatActivity {
         habitTextView.setText(selectedHabit.getName());
         final ArrayAdapter<String> dateAdapter = new ArrayAdapter<String>(HabitActivity.this, android.R.layout.simple_list_item_1, selectedHabitDates);
         completionsListView.setAdapter(dateAdapter);
-        counterTextView.setText(Integer.toString(selectedHabit.getCompletions().size()) );
+        counterTextView.setText(Integer.toString(selectedHabit.getCompletions().size()));
 
         ArrayList<String> daysActive = new ArrayList<String>(selectedHabit.getFrequency());
         if (daysActive.contains("Monday")) {
@@ -111,7 +129,7 @@ public class HabitActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Toast.makeText(HabitActivity.this, "Habit completed!", Toast.LENGTH_SHORT).show();
-                Toast.makeText(HabitActivity.this, selectedHabit.getCreationDate(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(HabitActivity.this, selectedHabit.getCreationDate(), Toast.LENGTH_SHORT).show();
                 Date date = new Date();
                 String dateFormat = "yyyy/MM/dd hh:mm:ss";
                 SimpleDateFormat sdf = new SimpleDateFormat(dateFormat, Locale.CANADA);
@@ -134,7 +152,7 @@ public class HabitActivity extends AppCompatActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id) {
                 final int finalPosition = position;
-                Toast.makeText(HabitActivity.this, Integer.toString(finalPosition), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(HabitActivity.this, Integer.toString(finalPosition), Toast.LENGTH_SHORT).show();
                 AlertDialog.Builder builder = new AlertDialog.Builder(HabitActivity.this);
                 builder.setCancelable(true);
                 builder.setMessage("Are you sure you want to delete this completion?");
@@ -147,7 +165,7 @@ public class HabitActivity extends AppCompatActivity {
                             testString += s + ",";
                         }
                         saveInFile();
-                        Toast.makeText(HabitActivity.this, testString, Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(HabitActivity.this, testString, Toast.LENGTH_SHORT).show();
                         dateAdapter.notifyDataSetChanged();
                     }
                 });
@@ -200,8 +218,8 @@ public class HabitActivity extends AppCompatActivity {
             Gson gson = new Gson();
             ArrayList<Habit> temp = HabitListController.getHabitList().getHabits();
 
-            Toast.makeText(this, "Size of saved: " + Integer.toString(HabitListController.getHabitList().size()), Toast.LENGTH_SHORT);
-            Toast.makeText(this, "Stuff saved: " + HabitListController.getHabitList().printHabit(), Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "Size of saved: " + Integer.toString(HabitListController.getHabitList().size()), Toast.LENGTH_SHORT);
+            //Toast.makeText(this, "Stuff saved: " + HabitListController.getHabitList().printHabit(), Toast.LENGTH_SHORT).show();
 
             gson.toJson(temp, out);
 

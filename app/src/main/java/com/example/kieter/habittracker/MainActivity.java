@@ -1,3 +1,21 @@
+/*
+Habit Tracker - Tracks Daily Habits
+Copyright (C) 2016 Kieter Philip Balisnomo, Abram Hindle
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.example.kieter.habittracker;
 
 import android.content.DialogInterface;
@@ -108,7 +126,7 @@ public class MainActivity extends AppCompatActivity implements AddHabitDialogFra
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 final int finalClickPosition = position;
                 HabitListController.giveSelectedHabit(list.get(finalClickPosition));
-                Toast.makeText(MainActivity.this, HabitListController.getSelectedHabit().getName(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(MainActivity.this, HabitListController.getSelectedHabit().getName(), Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(MainActivity.this, HabitActivity.class);
                 startActivity(intent);
                 saveInFile();
@@ -158,8 +176,8 @@ public class MainActivity extends AppCompatActivity implements AddHabitDialogFra
             Gson gson = new Gson();
             ArrayList<Habit> temp = HabitListController.getHabitList().getHabits();
 
-            Toast.makeText(this, "Size of saved: " + Integer.toString(HabitListController.getHabitList().size()), Toast.LENGTH_SHORT);
-            Toast.makeText(this, "Stuff saved: " + HabitListController.getHabitList().printHabit(), Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "Size of saved: " + Integer.toString(HabitListController.getHabitList().size()), Toast.LENGTH_SHORT);
+            //Toast.makeText(this, "Stuff saved: " + HabitListController.getHabitList().printHabit(), Toast.LENGTH_SHORT).show();
 
             gson.toJson(temp, out);
 
