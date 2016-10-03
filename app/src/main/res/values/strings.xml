@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">HabitTracker</string>
+    <string name="app_name">balisnom-HabitTracker</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_see_habit">SeeHabitActivity</string>
     <string name="habit_name">Habit_name</string>
