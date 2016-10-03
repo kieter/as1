@@ -20,15 +20,17 @@ package com.example.kieter.habittracker;
 
 import java.util.ArrayList;
 
-/**
- * Created by kieter on 9/24/2016.
+/*
+Habitlist contains habits.
+One can add habits, remove habits, print habits, get size, add/remove listeners, notify listeners
+clear listeners, and see if a habit is contained in the list.
  */
-
 public class HabitList extends ArrayList {
 
     protected ArrayList<Habit> habitList;
     protected ArrayList<Listener> listeners;
 
+    // Constructor
     public HabitList() {
         habitList = new ArrayList<Habit>();
         listeners = new ArrayList<Listener>();
@@ -65,6 +67,8 @@ public class HabitList extends ArrayList {
         return habitList.contains(habit);
     }
 
+
+    // Listeners
     public void notifyListeners() {
         for (Listener listener: listeners) {
             listener.update();
