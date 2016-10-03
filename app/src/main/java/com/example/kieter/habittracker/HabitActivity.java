@@ -113,28 +113,37 @@ public class HabitActivity extends AppCompatActivity {
             sunTextView.setTextColor(getResources().getColor(R.color.colorAccent));
         }
 
-
-        // Added an observer!
+        // Added an observer after clearing observers.
         selectedHabit.clearListeners();
         selectedHabit.addListener(new Listener() {
             @Override
+            // update keeps the datset persistent with user changes
             public void update() {
                 dateAdapter.notifyDataSetChanged();
             }
         });
 
+
         FloatingActionButton completeFAB = (FloatingActionButton) findViewById(R.id.completeFAB);
         completeFAB.setOnClickListener(new View.OnClickListener() {
             @Override
+            /*
+            When the user clicks the floating action button with a checkmark it will add a
+            completion to the list view with a date accurate to the second. It will also increment
+            the completions counter in the bottom right corner and save the file to internal
+            storage.
+             */
             public void onClick(View v) {
                 Toast.makeText(HabitActivity.this, "Habit completed!", Toast.LENGTH_SHORT).show();
-                //Toast.makeText(HabitActivity.this, selectedHabit.getCreationDate(), Toast.LENGTH_SHORT).show();
+
                 Date date = new Date();
                 String dateFormat = "yyyy/MM/dd hh:mm:ss";
                 SimpleDateFormat sdf = new SimpleDateFormat(dateFormat, Locale.CANADA);
                 String format = sdf.format(date);
+
                 counterTextView.setText(Integer.toString(selectedHabit.getCompletions().size() + 1) );
                 selectedHabit.addCompletion(format);
+
                 saveInFile();
             }
         });
@@ -142,45 +151,55 @@ public class HabitActivity extends AppCompatActivity {
         ImageButton backImageButton = (ImageButton) findViewById(R.id.backImageButton);
         backImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
+            // When the user clicks the back button it will finish the activity and go back
             public void onClick(View v) {
                 HabitActivity.this.finish();
             }
         });
-
         completionsListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
+            /*
+            Should the user long click a completion they are given a prompt about whether or not
+            to delete that completion.
+             */
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id) {
                 final int finalPosition = position;
-                //Toast.makeText(HabitActivity.this, Integer.toString(finalPosition), Toast.LENGTH_SHORT).show();
                 AlertDialog.Builder builder = new AlertDialog.Builder(HabitActivity.this);
                 builder.setCancelable(true);
                 builder.setMessage("Are you sure you want to delete this completion?");
                 builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                     @Override
+                    /*
+                    Should the user click the positive button, it will remove the habit completion
+                    from the list and delete it from the static list and save in file.
+                     */
                     public void onClick(DialogInterface dialog, int which) {
                         selectedHabitDates.remove(finalPosition);
-                        String testString = "";
-                        for (String s: selectedHabit.getCompletions()) {
-                            testString += s + ",";
-                        }
-                        saveInFile();
-                        //Toast.makeText(HabitActivity.this, testString, Toast.LENGTH_SHORT).show();
                         dateAdapter.notifyDataSetChanged();
+                        saveInFile();
                     }
                 });
 
                 builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
+                    /*
+                    Should the user cancel it will cancel the dialog
+                     */
                     public void onClick(DialogInterface dialog, int which) {
                         // Do nothing.
                     }
                 });
                 builder.show();
                 return false;
-            }
+            } // end of onItemLongClick
         });
-    }
+    } // end of on Create
 
+    /*
+    Load from file will open the persistent file from internal storage and store the list of habits
+    stored into a static variable listOfHabits that persists between activities so that the proper
+    information can be loaded and stored upon any edits to habits.
+     */
     private void loadFromFile() {
         ArrayList<Habit> listOfHabits;
         try {
@@ -191,34 +210,21 @@ public class HabitActivity extends AppCompatActivity {
 
             Type listType = new TypeToken<ArrayList<Habit>>(){}.getType();
             listOfHabits = gson.fromJson(in, listType);
-
-            //Type listType = new TypeToken<HabitList>(){}.getType();
-
-            //Toast.makeText(this, "From load file: " + HabitListController.getHabitList().printHabit(), Toast.LENGTH_SHORT).show();
-            //Toast.makeText(this, "Size of loaded: " + Integer.toString(HabitListController.getHabitList().size()), Toast.LENGTH_SHORT).show();
-            //HabitList test = gson.fromJson(in, listType);
-
-            //HabitListController.giveHabitList((HabitList) gson.fromJson(in, listType));
-            //HabitListController.giveHabitList(test);
-            // Toast.makeText(this, "Size of loaded: " + Integer.toString(HabitListController.getHabitList().size()), Toast.LENGTH_SHORT).show();
-            // Toast.makeText(this, "Stuff loaded: " + HabitListController.getHabitList().printHabit(), Toast.LENGTH_SHORT).show();
-
-
         }
         catch (FileNotFoundException e) {
-            //HabitListController habitListController = new HabitListController() ;
         }
-    }
+    } // end of loadFromFile
 
+    /*
+    Save from file alters the persistent file in internal storage to keep consistency with what's
+    going on with user edits in the app.
+    */
     private void saveInFile() {
         try {
             FileOutputStream fos = openFileOutput(FILENAME, 0);
             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(fos));
             Gson gson = new Gson();
             ArrayList<Habit> temp = HabitListController.getHabitList().getHabits();
-
-            //Toast.makeText(this, "Size of saved: " + Integer.toString(HabitListController.getHabitList().size()), Toast.LENGTH_SHORT);
-            //Toast.makeText(this, "Stuff saved: " + HabitListController.getHabitList().printHabit(), Toast.LENGTH_SHORT).show();
 
             gson.toJson(temp, out);
 
@@ -231,10 +237,6 @@ public class HabitActivity extends AppCompatActivity {
         catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-
-
-
-}
+    } // end of saveInFile
+} // end of HabitActivity
 
