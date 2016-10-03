@@ -24,13 +24,14 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Locale;
 
-/**
- * Created by kieter on 9/24/2016.
+/*
+Habit contains necessary information for a habit, like it's name, the creation date (as a string),
+how often it is during the week (stored as an array list of strings containing days "Monday" etc),
+and completions (an array list of dates as strings).
+Habit also contains listeners to update views.
  */
-
 public class Habit {
 
-    //TODO exception for duplicate habitNames
     protected String habitName;
     protected String creationDate;
     protected ArrayList<String> frequency;
@@ -71,7 +72,6 @@ public class Habit {
     }
 
     // TODO: addDate, removeDate and tests
-
     public void addCompletion(String dateString) {
         this.completions.add(dateString);
         notifyListeners();
@@ -98,6 +98,7 @@ public class Habit {
         return this.habitName;
     }
 
+    // Listener methods
     public void notifyListeners() {
         for (Listener listener: listeners) {
             listener.update();
