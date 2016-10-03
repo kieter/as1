@@ -18,10 +18,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package com.example.kieter.habittracker;
 
-/**
- * Created by kiete on 9/30/2016.
+/*
+HabitInvalidException is thrown when a Habit is created with a date or name as empty strings.
  */
-
 public class HabitInvalidException extends Exception {
 
     public HabitInvalidException() {
